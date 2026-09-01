@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f2547">
+<title>En Forma — Escola de Policia de Catalunya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --blue-900:#0f2547;
+  --blue-800:#16386b;
+  --blue-600:#2f6fed;
+  --blue-500:#4c86f5;
+  --blue-100:#e7edfb;
+  --blue-050:#f4f7fc;
+  --bg:#eef2f9;
+  --surface:#ffffff;
+  --ink:#14213d;
+  --ink-soft:#5b6b8c;
+  --ink-faint:#93a1bd;
+  --green:#1e8e5a;
+  --green-bg:#e5f5ed;
+  --red:#d64545;
+  --red-bg:#fbe9e9;
+  --amber:#c98a1f;
+  --amber-bg:#fbf1de;
+  --radius-lg:20px;
+  --radius-md:14px;
+  --radius-sm:9px;
+  --shadow:0 10px 30px -14px rgba(15,37,71,.28);
+  --shadow-sm:0 2px 10px -4px rgba(15,37,71,.18);
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.display{font-family:'Space Grotesk',sans-serif;}
+button{font-family:inherit;}
+::selection{background:var(--blue-100);}
+a{color:inherit;}
+
+/* ============ APP SHELL ============ */
+#app-frame{
+  max-width:460px;
+  margin:0 auto;
+  min-height:100vh;
+  background:var(--bg);
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  box-shadow:var(--shadow);
+}
+@media(min-width:520px){
+  body{padding:24px 0;background:#dbe4f2;}
+  #app-frame{min-height:calc(100vh - 48px);border-radius:28px;overflow:hidden;}
+}
+
+/* ============ LOGIN ============ */
+#screen-login{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:40px 28px;
+  background:linear-gradient(165deg,var(--blue-900),var(--blue-800) 60%,#1c477f);
+  color:#fff;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:44px;
+}
+.brand-mark{
+  width:44px;height:44px;border-radius:12px;
+  background:rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(255,255,255,.2);
+}
+.brand-name{font-size:19px;font-weight:600;letter-spacing:.2px;}
+.brand-sub{font-size:12.5px;color:rgba(255,255,255,.6);margin-top:1px;}
+#screen-login h1{font-size:26px;line-height:1.25;font-weight:600;margin:0 0 8px;}
+#screen-login p.lead{color:rgba(255,255,255,.65);font-size:14.5px;margin:0 0 30px;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:12.5px;color:rgba(255,255,255,.65);margin-bottom:6px;}
+.field input,.field select{
+  width:100%;padding:13px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.08);color:#fff;font-size:15px;outline:none;
+}
+.field input::placeholder{color:rgba(255,255,255,.35);}
+.field select option{color:#14213d;}
+.field input:focus,.field select:focus{border-color:var(--blue-500);background:rgba(255,255,255,.13);}
+.btn-primary{
+  width:100%;padding:14px;border-radius:12px;border:none;
+  background:#fff;color:var(--blue-900);font-weight:600;font-size:15px;
+  cursor:pointer;margin-top:8px;transition:transform .12s ease;
+}
+.btn-primary:active{transform:scale(.98);}
+.login-note{margin-top:18px;font-size:12px;color:rgba(255,255,255,.42);text-align:center;}
+
+/* ============ TOP HEADER ============ */
+#app-header{
+  padding:20px 20px 16px;
+  background:var(--blue-900);
+  color:#fff;
+  border-radius:0 0 22px 22px;
+}
+.header-row{display:flex;justify-content:space-between;align-items:flex-start;}
+.header-greet .small{font-size:12.5px;color:rgba(255,255,255,.55);}
+.header-greet .name{font-size:18.5px;font-weight:600;margin-top:2px;}
+.streak-pill{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);
+  padding:7px 12px;border-radius:999px;font-size:13px;font-weight:600;
+}
+.tip-card{
+  margin-top:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+  border-radius:var(--radius-md);padding:13px 14px;font-size:13px;color:rgba(255,255,255,.85);line-height:1.45;
+}
+.tip-card b{display:block;font-size:11.5px;color:rgba(255,255,255,.5);font-weight:600;margin-bottom:4px;}
+.tip-card-light{
+  margin:0 0 14px;background:var(--blue-050);border:1px solid var(--blue-100);
+  border-radius:var(--radius-md);padding:13px 14px;font-size:13px;color:var(--blue-900);line-height:1.45;
+}
+.tip-card-light b{display:block;font-size:11.5px;color:var(--blue-600);font-weight:700;margin-bottom:4px;}
+
+/* ============ MAIN / SECTIONS ============ */
+#app-main{flex:1;padding:18px 18px 112px;overflow-y:auto;}
+.section{display:none;}
+.section.active{display:block;animation:fadein .25s ease;}
+@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.section-title{font-size:18px;font-weight:600;margin:2px 0 14px;}
+.section-title .sub{display:block;font-size:12.5px;font-weight:400;color:var(--ink-soft);margin-top:2px;}
+
+.card{
+  background:var(--surface);border-radius:var(--radius-lg);padding:16px;
+  box-shadow:var(--shadow-sm);margin-bottom:14px;border:1px solid #eef1f8;
+}
+.card h3{margin:0 0 10px;font-size:14.5px;font-weight:600;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.stat-card{background:var(--blue-050);border-radius:var(--radius-md);padding:14px;}
+.stat-card .num{font-size:22px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--blue-800);}
+.stat-card .lbl{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:10px 16px;border-radius:11px;border:1px solid transparent;
+  font-size:13.5px;font-weight:600;cursor:pointer;transition:transform .1s ease;
+}
+.btn:active{transform:scale(.97);}
+.btn-blue{background:var(--blue-600);color:#fff;}
+.btn-outline{background:#fff;border-color:#dde4f2;color:var(--blue-800);}
+.btn-ghost{background:var(--blue-100);color:var(--blue-800);}
+.btn-sm{padding:7px 12px;font-size:12.5px;}
+.btn-block{width:100%;}
+
+input[type=text],input[type=number],input[type=date],input[type=time],select,textarea{
+  width:100%;padding:10px 12px;border-radius:10px;border:1px solid #dde4f2;
+  font-size:14px;font-family:inherit;background:#fbfcfe;color:var(--ink);outline:none;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--blue-500);}
+textarea{resize:vertical;min-height:90px;}
+label.f-lbl{display:block;font-size:12px;color:var(--ink-soft);margin:0 0 5px;}
+.form-row{margin-bottom:12px;}
+
+/* ---- Bottom nav ---- */
+#bottom-nav{
+  position:absolute;bottom:14px;left:12px;right:12px;
+  background:#fff;border:1px solid #e7ecf5;
+  display:flex;padding:7px 4px calc(7px + env(safe-area-inset-bottom));
+  border-radius:20px;
+  box-shadow:0 10px 26px -10px rgba(15,37,71,.35);
+}
+.nav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  background:none;border:none;padding:6px 1px;border-radius:12px;cursor:pointer;
+  color:var(--ink-faint);
+}
+.nav-btn svg{width:18px;height:18px;}
+.nav-btn span{font-size:9px;font-weight:600;}
+.nav-btn.active{color:var(--blue-600);}
+
+/* ---- Calendar ---- */
+.week-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.week-nav .lbl{font-size:13.5px;font-weight:600;}
+.cal-wrap{overflow-x:auto;border-radius:var(--radius-md);border:1px solid #eef1f8;}
+table.cal{border-collapse:collapse;width:100%;min-width:560px;font-size:12px;}
+table.cal th{background:var(--blue-050);color:var(--blue-800);font-weight:600;padding:8px 4px;position:sticky;top:0;}
+table.cal td{border:1px solid #eef1f8;padding:0;height:44px;width:80px;vertical-align:top;}
+table.cal td.hourcol{background:var(--blue-050);color:var(--ink-soft);text-align:center;font-size:11px;padding-top:4px;width:44px;}
+.cal-cell{width:100%;height:100%;min-height:44px;border:none;background:none;cursor:pointer;padding:4px 5px;font-size:11px;text-align:left;color:var(--ink);line-height:1.25;}
+.cal-cell.filled{background:var(--blue-100);color:var(--blue-800);font-weight:600;border-radius:6px;}
+.cal-cell .loc{display:block;font-weight:400;opacity:.75;font-size:10px;margin-top:1px;}
+.cal-cell:hover{filter:brightness(.97);}
+.cal-period-row{display:flex;gap:10px;margin-bottom:12px;}
+.cal-period-row select{width:auto;flex:1;}
+
+/* ---- Notes ---- */
+.subject-block{border-bottom:1px solid #f0f3fa;}
+.subject-block:last-child{border-bottom:none;}
+.subject-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid #f0f3fa;}
+.subject-row:last-child{border-bottom:none;}
+.subject-block .subject-row{border-bottom:none;}
+.subject-name{font-size:13.5px;font-weight:600;}
+.subject-avg{font-size:11.5px;color:var(--ink-soft);margin-top:1px;}
+.grade-pill{padding:5px 11px;border-radius:999px;font-weight:700;font-size:13px;min-width:44px;text-align:center;}
+.grade-green{background:var(--green-bg);color:var(--green);}
+.grade-amber{background:var(--amber-bg);color:var(--amber);}
+.grade-red{background:var(--red-bg);color:var(--red);}
+.subj-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.subj-detail{padding:0 0 10px 25px;}
+.grade-detail-row{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--ink-soft);padding:4px 0;}
+.grade-detail-row b{color:var(--ink);}
+.grade-detail-row .gd-del{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:12px;padding:0 2px;}
+
+/* ---- Mood picker ---- */
+.mood-row{display:flex;justify-content:space-between;gap:8px;margin:6px 0 14px;}
+.mood-opt{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 0;border-radius:12px;border:1.5px solid #eef1f8;background:#fbfcfe;cursor:pointer;}
+.mood-opt.sel{border-color:var(--blue-600);background:var(--blue-100);}
+.mood-opt .emoji{font-size:21px;}
+.mood-opt .txt{font-size:10px;color:var(--ink-soft);font-weight:600;}
+
+/* ---- Chips / tabs ---- */
+.chip-row{display:flex;gap:8px;overflow-x:auto;margin-bottom:14px;padding-bottom:2px;}
+.chip{padding:8px 14px;border-radius:999px;background:#fff;border:1px solid #dde4f2;font-size:12.5px;font-weight:600;white-space:nowrap;cursor:pointer;color:var(--ink-soft);}
+.chip.active{background:var(--blue-800);color:#fff;border-color:var(--blue-800);}
+
+/* ---- Scenario grid (concentracio) ---- */
+.scenario-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.scenario{
+  border-radius:var(--radius-md);padding:16px 12px;color:#fff;cursor:pointer;
+  display:flex;flex-direction:column;justify-content:flex-end;min-height:96px;
+  border:2px solid transparent;position:relative;overflow:hidden;
+}
+.scenario.sel{border-color:#fff;box-shadow:0 0 0 2px var(--blue-600);}
+.scenario .ico{font-size:22px;}
+.scenario .nm{font-size:12.5px;font-weight:700;margin-top:6px;}
+.sc-foc{background:linear-gradient(160deg,#7a2e12,#c9601f);}
+.sc-bosc{background:linear-gradient(160deg,#134a35,#2f8f5f);}
+.sc-pluja{background:linear-gradient(160deg,#2b3a55,#4d6690);}
+.sc-oceanic{background:linear-gradient(160deg,#0e3f5c,#1a75a3);}
+
+.flight-box{text-align:center;padding:10px 0;}
+.flight-box .dest{font-size:15px;font-weight:700;margin-bottom:10px;}
+.progress-track{height:6px;background:#eef1f8;border-radius:4px;overflow:hidden;margin:10px 0;}
+.progress-fill{height:100%;background:var(--blue-600);width:0%;transition:width .3s linear;}
+.timer-big{font-family:'Space Grotesk',sans-serif;font-size:44px;font-weight:700;color:var(--blue-800);text-align:center;margin:8px 0;}
+
+/* ---- Objectius ---- */
+.goal-card{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f0f3fa;}
+.goal-card:last-child{border-bottom:none;}
+.goal-flame{width:40px;height:40px;border-radius:11px;background:var(--blue-050);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.goal-info{flex:1;}
+.goal-title{font-size:13.5px;font-weight:600;}
+.goal-meta{font-size:11.5px;color:var(--ink-soft);margin-top:1px;}
+.goal-check{width:34px;height:34px;border-radius:10px;border:1.5px solid #dde4f2;background:#fff;cursor:pointer;flex-shrink:0;font-size:15px;}
+.goal-check.done{background:var(--green);border-color:var(--green);color:#fff;}
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
+.badge{background:var(--blue-100);color:var(--blue-800);font-size:11px;font-weight:700;padding:6px 10px;border-radius:999px;}
+
+/* ---- Apunts / quiz ---- */
+.note-item{padding:12px 0;border-bottom:1px solid #f0f3fa;}
+.note-item:last-child{border-bottom:none;}
+.note-item .t{font-size:13.5px;font-weight:600;}
+.note-item .r{font-size:12.5px;color:var(--ink-soft);margin-top:3px;line-height:1.4;}
+.quiz-q{font-size:14px;font-weight:600;margin-bottom:10px;}
+.quiz-opt{display:block;width:100%;text-align:left;padding:11px 13px;border-radius:11px;border:1.5px solid #eef1f8;background:#fbfcfe;margin-bottom:8px;font-size:13.5px;cursor:pointer;}
+.quiz-opt.correct{background:var(--green-bg);border-color:var(--green);color:var(--green);}
+.quiz-opt.wrong{background:var(--red-bg);border-color:var(--red);color:var(--red);}
+
+/* ---- Cap de seccio ---- */
+.student-row{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid #f0f3fa;}
+.student-row:last-child{border-bottom:none;}
+.avatar{width:36px;height:36px;border-radius:10px;background:var(--blue-100);color:var(--blue-800);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;}
+.student-info{flex:1;}
+.student-name{font-size:13px;font-weight:600;}
+.student-dni{font-size:11px;color:var(--ink-soft);}
+.att-toggle{width:34px;height:34px;border-radius:10px;border:1.5px solid #dde4f2;background:#fff;cursor:pointer;font-size:14px;}
+.att-toggle.present{background:var(--green-bg);border-color:var(--green);color:var(--green);}
+.att-toggle.absent{background:var(--red-bg);border-color:var(--red);color:var(--red);}
+
+/* ---- Tasques pendents ---- */
+.task-item{display:flex;align-items:center;gap:10px;padding:11px 4px 11px 9px;border-bottom:1px solid #f0f3fa;border-left:3px solid #dde4f2;border-radius:8px;margin-bottom:2px;}
+.task-item:last-child{border-bottom:none;}
+.task-item.task-overdue{border-left-color:var(--red);background:var(--red-bg);}
+.task-item.task-urgent{border-left-color:var(--red);}
+.task-item.task-warning{border-left-color:var(--amber);}
+.task-item.task-ok{border-left-color:var(--green);}
+.task-item.task-done{opacity:.5;}
+.task-check{width:25px;height:25px;border-radius:8px;border:1.5px solid #dde4f2;background:#fff;cursor:pointer;flex-shrink:0;font-size:13px;}
+.task-check.done{background:var(--green);border-color:var(--green);color:#fff;}
+.task-info{flex:1;min-width:0;}
+.task-title{font-size:13.5px;font-weight:600;}
+.task-subj{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:999px;margin-left:6px;white-space:nowrap;}
+.task-meta{font-size:11.5px;color:var(--ink-soft);margin-top:2px;}
+.task-meta b{color:var(--ink);}
+.task-del{background:none;border:none;color:var(--ink-faint);font-size:14px;cursor:pointer;flex-shrink:0;padding:4px;}
+
+.empty-state{text-align:center;padding:30px 10px;color:var(--ink-soft);font-size:13px;}
+.empty-state .ic{font-size:26px;margin-bottom:8px;}
+canvas{max-width:100%;}
+.modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:flex-end;justify-content:center;z-index:50;}
+.modal-bg.open{display:flex;}
+.modal-sheet{background:#fff;width:100%;max-width:460px;border-radius:20px 20px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom));max-height:80vh;overflow-y:auto;}
+.modal-sheet h3{margin:0 0 14px;font-size:15.5px;}
+.x-close{float:right;background:none;border:none;font-size:18px;color:var(--ink-soft);cursor:pointer;}
+</style>
+</head>
+<body>
+<div id="app-frame">
+
+  <!-- ================= APP (accés directe, sense inici de sessió per ara) ================= -->
+  <div id="screen-app" style="flex:1;display:flex;flex-direction:column;">
+    <div id="app-header">
+      <div class="header-row">
+        <div class="header-greet">
+          <div class="small" id="hdr-classe">—</div>
+          <div class="name" id="hdr-nom">—</div>
+        </div>
+        <div class="streak-pill">🔥 <span id="hdr-streak">0</span></div>
+      </div>
+    </div>
+
+    <div id="app-main">
+
+      <!-- ---------- INICI ---------- -->
+      <section class="section" id="sec-inici">
+        <div class="section-title">Inici<span class="sub">Resum del teu dia</span></div>
+        <div class="tip-card-light"><b>Consell del dia</b><span id="hdr-tip">—</span></div>
+        <div class="grid2">
+          <div class="stat-card"><div class="num" id="in-classes-avui">0</div><div class="lbl">Classes avui</div></div>
+          <div class="stat-card"><div class="num" id="in-son">—</div><div class="lbl">Hores de son ahir</div></div>
+          <div class="stat-card"><div class="num" id="in-animo">—</div><div class="lbl">Ànim d'avui</div></div>
+          <div class="stat-card"><div class="num" id="in-mitjana">—</div><div class="lbl">Mitjana de notes</div></div>
+        </div>
+        <div class="card">
+          <h3>Properes classes</h3>
+          <div id="in-proper-list"></div>
+        </div>
+        <div class="card">
+          <h3>Tasques properes</h3>
+          <div id="in-tasks-mini"></div>
+        </div>
+        <div class="card">
+          <h3>Objectius d'avui</h3>
+          <div id="in-goals-mini"></div>
+        </div>
+      </section>
+
+      <!-- ---------- CALENDARI ---------- -->
+      <section class="section" id="sec-calendari">
+        <div class="section-title">Calendari setmanal<span class="sub">Omple el teu horari cada setmana</span></div>
+        <div class="cal-period-row">
+          <select id="cal-period-select" onchange="changeCalPeriod(this.value)">
+            <option value="mati">☀️ Matí (6:30 – 14:00)</option>
+            <option value="tarda">🌆 Tarda (14:00 – 22:00)</option>
+          </select>
+        </div>
+        <div class="week-nav">
+          <button class="btn btn-outline btn-sm" onclick="calWeek(-1)">‹ Setmana ant.</button>
+          <div class="lbl" id="cal-week-lbl">—</div>
+          <button class="btn btn-outline btn-sm" onclick="calWeek(1)">Seg. setmana ›</button>
+        </div>
+        <div class="cal-wrap"><table class="cal" id="cal-table"></table></div>
+        <p style="font-size:11.5px;color:var(--ink-soft);margin-top:10px;">Toca una casella per afegir o editar una classe en aquesta franja horària. Cada assignatura pot tenir el seu propi color.</p>
+      </section>
+
+      <!-- ---------- TASQUES PENDENTS ---------- -->
+      <section class="section" id="sec-tasques">
+        <div class="section-title">Tasques pendents<span class="sub">Terminis d'entrega i prioritats</span></div>
+        <div class="card">
+          <h3>Les teves tasques</h3>
+          <div id="tasks-list"></div>
+          <button class="btn btn-ghost btn-block" style="margin-top:12px;" onclick="openAddTask()">+ Nova tasca</button>
+        </div>
+      </section>
+
+      <!-- ---------- NOTES ---------- -->
+      <section class="section" id="sec-notes">
+        <div class="section-title">Seguiment de notes<span class="sub">Verd a prop del 10, vermell si estàs suspès/a · toca una assignatura per veure el detall</span></div>
+        <div class="card">
+          <h3>Assignatures</h3>
+          <div id="notes-list"></div>
+          <button class="btn btn-ghost btn-block" style="margin-top:12px;" onclick="openAddSubject()">+ Afegir assignatura</button>
+        </div>
+      </section>
+
+      <!-- ---------- BENESTAR ---------- -->
+      <section class="section" id="sec-benestar">
+        <div class="section-title">Benestar<span class="sub">Ànim, son i nivell d'estrès</span></div>
+        <div class="chip-row" id="benestar-tabs">
+          <div class="chip active" data-tab="animo">Estat d'ànim</div>
+          <div class="chip" data-tab="son">Son</div>
+          <div class="chip" data-tab="tests">Test d'estrès</div>
+          <div class="chip" data-tab="grafics">Gràfiques</div>
+        </div>
+
+        <div id="bt-animo" class="bt-pane">
+          <div class="card">
+            <h3>Com et sents avui?</h3>
+            <div class="mood-row" id="mood-picker"></div>
+            <textarea id="mood-note" placeholder="Vols afegir alguna nota? (opcional)"></textarea>
+            <button class="btn btn-blue btn-block" style="margin-top:10px;" onclick="saveMood()">Desar registre d'avui</button>
+          </div>
+        </div>
+
+        <div id="bt-son" class="bt-pane" style="display:none;">
+          <div class="card">
+            <h3>Registre de son d'avui</h3>
+            <div class="form-row"><label class="f-lbl">Hores dormides</label><input type="number" step="0.5" min="0" max="14" id="sleep-hours" placeholder="7.5"></div>
+            <div class="form-row"><label class="f-lbl">Qualitat (1-5)</label><input type="number" min="1" max="5" id="sleep-quality" placeholder="4"></div>
+            <button class="btn btn-blue btn-block" onclick="saveSleep()">Desar</button>
+          </div>
+          <div class="card"><h3>Mitjana últims 7 dies</h3><div class="num" id="sleep-avg" style="font-size:24px;font-family:'Space Grotesk',sans-serif;color:var(--blue-800);">—</div></div>
+        </div>
+
+        <div id="bt-tests" class="bt-pane" style="display:none;">
+          <div class="card">
+            <h3>Test ràpid d'estrès i burnout</h3>
+            <p style="font-size:12.5px;color:var(--ink-soft);margin-top:0;">Respon segons com t'has sentit aquesta última setmana (0 = mai, 4 = sempre).</p>
+            <div id="stress-questions"></div>
+            <button class="btn btn-blue btn-block" style="margin-top:6px;" onclick="submitStressTest()">Veure resultat</button>
+          </div>
+          <div class="card" id="stress-result-card" style="display:none;">
+            <h3>Resultat</h3>
+            <div id="stress-result"></div>
+          </div>
+        </div>
+
+        <div id="bt-grafics" class="bt-pane" style="display:none;">
+          <div class="chip-row" id="chart-tabs">
+            <div class="chip active" data-metric="notes">Notes</div>
+            <div class="chip" data-metric="animo">Ànim</div>
+            <div class="chip" data-metric="son">Son</div>
+            <div class="chip" data-metric="estres">Estrès</div>
+          </div>
+          <div class="card"><canvas id="evo-chart" height="220"></canvas></div>
+        </div>
+      </section>
+
+      <!-- ---------- ESTUDI ---------- -->
+      <section class="section" id="sec-estudi">
+        <div class="section-title">Zona d'estudi<span class="sub">Concentració, apunts i pauses</span></div>
+        <div class="chip-row" id="estudi-tabs">
+          <div class="chip active" data-tab="concentracio">Concentració</div>
+          <div class="chip" data-tab="apunts">Apunts i tests</div>
+          <div class="chip" data-tab="pausa">Assistent de pauses</div>
+        </div>
+
+        <div id="es-concentracio" class="es-pane">
+          <div class="card" id="scenario-picker-card">
+            <h3>Tria un escenari</h3>
+            <div class="scenario-grid">
+              <div class="scenario sc-foc" data-sc="foc" onclick="selectScenario('foc')"><div class="ico">🔥</div><div class="nm">Llar de foc</div></div>
+              <div class="scenario sc-bosc" data-sc="bosc" onclick="selectScenario('bosc')"><div class="ico">🌲</div><div class="nm">Bosc i riu</div></div>
+              <div class="scenario sc-pluja" data-sc="pluja" onclick="selectScenario('pluja')"><div class="ico">🌧️</div><div class="nm">Pluja suau</div></div>
+              <div class="scenario sc-oceanic" data-sc="ocea" onclick="selectScenario('ocea')"><div class="ico">🌊</div><div class="nm">Onades de mar</div></div>
+            </div>
+            <div class="form-row" style="margin-top:14px;">
+              <label class="f-lbl">Durada de la sessió (minuts)</label>
+              <input type="number" id="focus-minutes" value="25" min="5" max="90">
+            </div>
+            <button class="btn btn-blue btn-block" id="btn-start-flight" onclick="startFlight()" disabled>Selecciona un escenari per començar</button>
+          </div>
+
+          <div class="card" id="flight-card" style="display:none;">
+            <div class="flight-box">
+              <div class="dest" id="flight-dest">Volant cap al bosc...</div>
+              <div class="progress-track"><div class="progress-fill" id="flight-progress"></div></div>
+              <div style="font-size:12px;color:var(--ink-soft);" id="flight-status">Enlairant-se...</div>
+            </div>
+          </div>
+
+          <div class="card" id="session-card" style="display:none;">
+            <div class="timer-big" id="focus-timer">25:00</div>
+            <div style="display:flex;gap:10px;">
+              <button class="btn btn-outline" style="flex:1;" onclick="pauseFocus()" id="btn-pause-focus">Pausa</button>
+              <button class="btn btn-ghost" style="flex:1;" onclick="stopFocus()">Aturar</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="es-apunts" class="es-pane" style="display:none;">
+          <div class="card">
+            <h3>Puja els teus apunts</h3>
+            <div class="form-row"><label class="f-lbl">Títol</label><input type="text" id="apunt-titol" placeholder="Ex: Tema 3 — Dret Penal"></div>
+            <div class="form-row"><label class="f-lbl">Contingut</label><textarea id="apunt-contingut" placeholder="Enganxa aquí el text dels teus apunts..." style="min-height:120px;"></textarea></div>
+            <button class="btn btn-blue btn-block" onclick="processApunt()">Generar resum i test</button>
+          </div>
+          <div class="card">
+            <h3>Els meus apunts</h3>
+            <div id="apunts-list"></div>
+          </div>
+        </div>
+
+        <div id="es-pausa" class="es-pane" style="display:none;">
+          <div class="card">
+            <h3>Assistent de pauses</h3>
+            <p style="font-size:12.5px;color:var(--ink-soft);">Durant una sessió de concentració activa, et recordarem fer una pausa cada 25 minuts amb un suggeriment.</p>
+            <button class="btn btn-ghost btn-block" onclick="suggestBreak(true)">Dona'm una idea de pausa ara</button>
+            <div id="break-suggestion" style="margin-top:12px;font-size:13.5px;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- OBJECTIUS ---------- -->
+      <section class="section" id="sec-objectius">
+        <div class="section-title">Objectius i ratxes<span class="sub">Construeix hàbits dia a dia</span></div>
+        <div class="card">
+          <h3>Les teves ratxes</h3>
+          <div id="goals-list"></div>
+          <button class="btn btn-ghost btn-block" style="margin-top:12px;" onclick="openAddGoal()">+ Nou objectiu</button>
+        </div>
+        <div class="card">
+          <h3>Insígnies obtingudes</h3>
+          <div class="badge-row" id="badges-list"><span style="font-size:12.5px;color:var(--ink-soft);">Encara no tens insígnies. Mantén una ratxa per desbloquejar-ne!</span></div>
+        </div>
+      </section>
+
+      <!-- ---------- CAP DE SECCIÓ ---------- -->
+      <section class="section" id="sec-capseccio">
+        <div class="section-title">Cap de secció<span class="sub">Llista d'alumnes de la classe</span></div>
+        <div class="card">
+          <h3 id="cs-classe-nom">Classe</h3>
+          <div id="cs-students"></div>
+        </div>
+      </section>
+
+      <!-- ---------- MÉS / PERFIL ---------- -->
+      <section class="section" id="sec-mes">
+        <div class="section-title">Més<span class="sub">El teu perfil</span></div>
+        <div class="card">
+          <h3>Perfil</h3>
+          <div class="form-row"><label class="f-lbl">Nom complet</label><input type="text" id="profile-nom"></div>
+          <div class="form-row"><label class="f-lbl">DNI</label><input type="text" id="profile-dni"></div>
+          <div class="form-row"><label class="f-lbl">Classe</label><select id="profile-classe"></select></div>
+          <div class="form-row"><label class="f-lbl">Rol</label>
+            <select id="profile-rol">
+              <option value="alumne">Alumne/a</option>
+              <option value="cap_de_seccio">Cap de secció</option>
+            </select>
+          </div>
+          <button class="btn btn-blue btn-block" onclick="saveProfile()">Desar perfil</button>
+        </div>
+        <div class="card">
+          <button class="btn btn-outline btn-block" onclick="go('sec-objectius')" style="margin-bottom:10px;">🎯 Objectius i ratxes</button>
+          <button class="btn btn-outline btn-block" onclick="go('sec-capseccio')" id="btn-cs-link" style="margin-bottom:10px;display:none;">🛡️ Vista cap de secció</button>
+          <button class="btn btn-outline btn-block" style="color:var(--red);" onclick="doLogout()">Esborrar dades d'aquest dispositiu</button>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ---------- BOTTOM NAV ---------- -->
+    <div id="bottom-nav">
+      <button class="nav-btn active" data-nav="sec-inici" onclick="go('sec-inici')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+        <span>Inici</span>
+      </button>
+      <button class="nav-btn" data-nav="sec-calendari" onclick="go('sec-calendari')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        <span>Calendari</span>
+      </button>
+      <button class="nav-btn" data-nav="sec-notes" onclick="go('sec-notes')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h9l5 5v13H6z"/><path d="M9 12h6M9 16h6"/></svg>
+        <span>Notes</span>
+      </button>
+      <button class="nav-btn" data-nav="sec-tasques" onclick="go('sec-tasques')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
+        <span>Tasques</span>
+      </button>
+      <button class="nav-btn" data-nav="sec-benestar" onclick="go('sec-benestar')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.5-9.5-9C.7 8 2.6 4 6.5 4 9 4 11 5.8 12 7c1-1.2 3-3 5.5-3 3.9 0 5.8 4 4 8-2.5 4.5-9.5 9-9.5 9z"/></svg>
+        <span>Benestar</span>
+      </button>
+      <button class="nav-btn" data-nav="sec-estudi" onclick="go('sec-estudi')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+        <span>Estudi</span>
+      </button>
+      <button class="nav-btn" data-nav="sec-mes" onclick="go('sec-mes')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/></svg>
+        <span>Més</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ---------- MODALS ---------- -->
+<div class="modal-bg" id="modal-subject">
+  <div class="modal-sheet">
+    <button class="x-close" onclick="closeModal('modal-subject')">✕</button>
+    <h3 id="subject-modal-title">Nova assignatura</h3>
+    <div class="form-row"><label class="f-lbl">Nom</label><input type="text" id="new-subject-name" placeholder="Ex: Tir Policial"></div>
+    <div class="form-row"><label class="f-lbl">Color de l'assignatura</label><input type="color" id="new-subject-color" value="#4c86f5" style="height:42px;padding:4px 6px;"></div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-blue" style="flex:1;" onclick="addSubject()">Desar</button>
+      <button class="btn btn-outline" style="flex:1;color:var(--red);display:none;" id="btn-delete-subject" onclick="deleteSubject()">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-grade">
+  <div class="modal-sheet">
+    <button class="x-close" onclick="closeModal('modal-grade')">✕</button>
+    <h3 id="grade-modal-title">Afegir nota</h3>
+    <div class="form-row"><label class="f-lbl">Descripció</label><input type="text" id="new-grade-desc" placeholder="Ex: Examen parcial 1"></div>
+    <div class="form-row"><label class="f-lbl">Nota (0-10)</label><input type="number" id="new-grade-value" min="0" max="10" step="0.1"></div>
+    <div class="form-row"><label class="f-lbl">Pes sobre la nota final (%)</label><input type="number" id="new-grade-weight" min="0" max="100" step="1" placeholder="Ex: 30"></div>
+    <p style="font-size:11.5px;color:var(--ink-soft);margin-top:-6px;">Si hi ha exàmens que valen més que altres, indica quin percentatge representa cadascun. La mitjana es calcularà ponderada segons aquests pesos.</p>
+    <button class="btn btn-blue btn-block" onclick="addGrade()">Desar nota</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-cell">
+  <div class="modal-sheet">
+    <button class="x-close" onclick="closeModal('modal-cell')">✕</button>
+    <h3 id="cell-modal-title">Franja horària</h3>
+    <div class="form-row"><label class="f-lbl">Assignatura</label>
+      <select id="cell-subject" onchange="onCellSubjectChange()"></select>
+    </div>
+    <div class="form-row"><label class="f-lbl">Títol a mostrar</label><input type="text" id="cell-title" placeholder="Ex: Dret Penal"></div>
+    <div class="form-row"><label class="f-lbl">Ubicació (opcional)</label><input type="text" id="cell-loc" placeholder="Ex: Aula 3"></div>
+    <div class="form-row"><label class="f-lbl">Durada de la classe</label>
+      <select id="cell-durada">
+        <option value="30">30 min</option>
+        <option value="60" selected>1 h</option>
+        <option value="90">1 h 30 min</option>
+        <option value="120">2 h</option>
+        <option value="150">2 h 30 min</option>
+        <option value="180">3 h</option>
+        <option value="210">3 h 30 min</option>
+        <option value="240">4 h</option>
+      </select>
+    </div>
+    <div class="form-row"><label class="f-lbl">Color</label><input type="color" id="cell-color" value="#4c86f5" style="height:42px;padding:4px 6px;"></div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-blue" style="flex:1;" onclick="saveCell()">Desar</button>
+      <button class="btn btn-outline" style="flex:1;" onclick="clearCell()">Buidar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-task">
+  <div class="modal-sheet">
+    <button class="x-close" onclick="closeModal('modal-task')">✕</button>
+    <h3>Nova tasca pendent</h3>
+    <div class="form-row"><label class="f-lbl">Títol</label><input type="text" id="task-title" placeholder="Ex: Treball de Dret Administratiu"></div>
+    <div class="form-row"><label class="f-lbl">Assignatura (opcional)</label><select id="task-subject"><option value="">— Cap —</option></select></div>
+    <div class="form-row"><label class="f-lbl">Data límit</label><input type="date" id="task-date"></div>
+    <div class="form-row"><label class="f-lbl">Hora límit</label><input type="time" id="task-time" value="23:59"></div>
+    <button class="btn btn-blue btn-block" onclick="addTask()">Desar tasca</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-goal">
+  <div class="modal-sheet">
+    <button class="x-close" onclick="closeModal('modal-goal')">✕</button>
+    <h3>Nou objectiu</h3>
+    <div class="form-row"><label class="f-lbl">Títol</label><input type="text" id="goal-title" placeholder="Ex: Estudiar 5 dies seguits"></div>
+    <div class="form-row"><label class="f-lbl">Tipus</label>
+      <select id="goal-type">
+        <option value="estudi">Estudi</option>
+        <option value="esport">Esport</option>
+        <option value="son">Son</option>
+        <option value="benestar">Benestar</option>
+        <option value="altre">Altre</option>
+      </select>
+    </div>
+    <button class="btn btn-blue btn-block" onclick="addGoal()">Crear objectiu</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-quiz">
+  <div class="modal-sheet">
+    <button class="x-close" onclick="closeModal('modal-quiz')">✕</button>
+    <h3 id="quiz-title">Test ràpid</h3>
+    <div id="quiz-body"></div>
+    <button class="btn btn-outline btn-block" id="quiz-next-btn" style="margin-top:6px;display:none;" onclick="nextQuizQ()">Següent pregunta</button>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   EN FORMA — Escola de Policia de Catalunya
+   Prototip frontend (localStorage). Els noms de camps segueixen
+   l'esquema SQL de Supabase perquè sigui fàcil migrar-hi més endavant.
+===================================================================== */
+
+/* ---------- SEED DATA ---------- */
+const CLASSES = ["A","B","C","D"].flatMap(l => Array.from({length:15}, (_,i) => l + (i+1)));
+const DEFAULT_SUBJECTS = ["Dret Penal","Dret Administratiu","Tècniques Policials","Educació Física","Psicologia Aplicada","Tir Policial","Ordre Públic","Circulació i Trànsit"];
+const SUBJECT_COLORS = ["#2f6fed","#1e8e5a","#c98a1f","#d64545","#7a3fd1","#0f9aa8","#c9601f","#3f6b3f","#a53f7a","#4d6690"];
+const TIPS = [
+  "Fes una pausa de 5 minuts cada hora d'estudi per mantenir la concentració.",
+  "Dormir almenys 7 hores millora la memòria i la presa de decisions.",
+  "Una passejada de 15 minuts a l'aire lliure redueix l'estrès de forma immediata.",
+  "Beure prou aigua durant el dia ajuda a mantenir l'energia i la concentració.",
+  "L'exercici físic regular és un dels millors reductors naturals de l'ansietat.",
+  "Repassar 10 minuts abans de dormir consolida millor la informació.",
+  "Parlar amb un company sobre com et sents alleugereix la càrrega mental.",
+  "Celebra els petits avenços: cada dia d'estudi suma per a l'examen final."
+];
+const BREAK_IDEAS = [
+  "Surt a córrer 10 minuts per activar el cos i despejar la ment.",
+  "Prepara't un cafè o una infusió i beu-lo sense pantalles.",
+  "Fes una passejada curta pel voltant de l'escola.",
+  "Estira't 5 minuts: coll, esquena i cames.",
+  "Obre una finestra i respira aire fresc durant 2 minuts.",
+  "Escolta una cançó sencera sense fer res més."
+];
+const STRESS_QUESTIONS = [
+  "Em sento esgotat/da mentalment després de les classes.",
+  "Em costa concentrar-me durant l'estudi.",
+  "Em sento irritable o tens/a amb facilitat.",
+  "Tinc problemes per conciliar el son pensant en els estudis.",
+  "Sento que no dono l'abast amb tot el que he de fer.",
+  "Em sento desmotivat/da respecte a la formació."
+];
+const MOODS = [
+  {k:"molt_malament",e:"😞",t:"Molt malament",v:1},
+  {k:"malament",e:"🙁",t:"Malament",v:2},
+  {k:"neutral",e:"😐",t:"Neutral",v:3},
+  {k:"be",e:"🙂",t:"Bé",v:4},
+  {k:"molt_be",e:"😄",t:"Molt bé",v:5}
+];
+const SCENARIOS = {
+  foc:{nom:"la llar de foc",label:"Llar de foc",color:"#c9601f"},
+  bosc:{nom:"el bosc i el riu",label:"Bosc i riu",color:"#2f8f5f"},
+  pluja:{nom:"la pluja suau",label:"Pluja suau",color:"#4d6690"},
+  ocea:{nom:"la vora del mar",label:"Onades de mar",color:"#1a75a3"}
+};
+
+/* ---------- STORAGE HELPERS ---------- */
+const LS = {
+  get(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}},
+  set(k,v){localStorage.setItem(k,JSON.stringify(v));}
+};
+let CUR = null; // usuari actual {dni, nom, classe, rol}
+const uid = () => Math.random().toString(36).slice(2,10);
+const todayStr = () => new Date().toISOString().slice(0,10);
+const monday = (d) => { const x=new Date(d); const day=(x.getDay()+6)%7; x.setDate(x.getDate()-day); return x.toISOString().slice(0,10); };
+
+function keyFor(base){ return `epc_${base}_${CUR.dni}`; }
+
+/* ---------- PERFIL (sense restricció d'entrada per ara) ---------- */
+function populateClasseSelect(sel){
+  sel.innerHTML = '';
+  CLASSES.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});
+}
+
+function defaultProfile(){
+  return {dni:'ALUMNE-DEMO', nom:'Alumne/a', classe:CLASSES[0], rol:'alumne'};
+}
+
+function saveProfile(){
+  const nom = document.getElementById('profile-nom').value.trim() || 'Alumne/a';
+  const dni = (document.getElementById('profile-dni').value.trim() || 'ALUMNE-DEMO').toUpperCase();
+  const classe = document.getElementById('profile-classe').value;
+  const rol = document.getElementById('profile-rol').value;
+
+  const usuaris = LS.get('epc_usuaris', {});
+  usuaris[dni] = {dni, nom, classe, rol};
+  LS.set('epc_usuaris', usuaris);
+  LS.set('epc_perfil_actiu', dni);
+
+  CUR = usuaris[dni];
+  seedIfNeeded();
+  refreshAppForProfile();
+  alert('Perfil desat.');
+}
+
+function doLogout(){
+  localStorage.clear();
+  location.reload();
+}
+
+function seedIfNeeded(){
+  const subjKey = keyFor('assignatures');
+  if(!LS.get(subjKey)){
+    LS.set(subjKey, DEFAULT_SUBJECTS.map((n,i)=>({id:uid(), nom:n, color:SUBJECT_COLORS[i%SUBJECT_COLORS.length]})));
+  }
+}
+
+/* ---------- BOOT (accés directe a l'app) ---------- */
+window.addEventListener('load', ()=>{
+  const selClasse = document.getElementById('profile-classe');
+  populateClasseSelect(selClasse);
+
+  const dni = LS.get('epc_perfil_actiu', null);
+  const usuaris = LS.get('epc_usuaris', {});
+  if(dni && usuaris[dni]){
+    CUR = usuaris[dni];
+  } else {
+    CUR = defaultProfile();
+    usuaris[CUR.dni] = CUR;
+    LS.set('epc_usuaris', usuaris);
+    LS.set('epc_perfil_actiu', CUR.dni);
+  }
+  seedIfNeeded();
+  enterApp();
+});
+
+function enterApp(){
+  document.getElementById('hdr-tip').textContent = TIPS[dayIndex() % TIPS.length];
+  buildMoodPicker();
+  buildStressQuestions();
+  cal_weekOffset = 0;
+  cal_period = LS.get('epc_cal_period', 'mati');
+  document.getElementById('cal-period-select').value = cal_period;
+  renderCalendar();
+  renderNotes();
+  renderInici();
+  renderGoals();
+  renderTasks();
+  wireTabs();
+  refreshAppForProfile();
+  go('sec-inici');
+  if(!taskTimerInterval) taskTimerInterval = setInterval(()=>{ renderTasks(); renderInici(); }, 60000);
+}
+
+function refreshAppForProfile(){
+  document.getElementById('hdr-nom').textContent = CUR.nom;
+  document.getElementById('hdr-classe').textContent = CUR.classe;
+  document.getElementById('profile-nom').value = CUR.nom;
+  document.getElementById('profile-dni').value = CUR.dni;
+  document.getElementById('profile-classe').value = CUR.classe;
+  document.getElementById('profile-rol').value = CUR.rol;
+  document.getElementById('btn-cs-link').style.display = (CUR.rol === 'cap_de_seccio') ? 'block' : 'none';
+  renderInici();
+  renderNotes();
+}
+
+function dayIndex(){ const d=new Date(); return Math.floor(d.getTime()/86400000); }
+
+/* ---------- NAV ---------- */
+function go(sectionId){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(sectionId).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.nav===sectionId));
+  if(sectionId==='sec-inici') renderInici();
+  if(sectionId==='sec-notes') renderNotes();
+  if(sectionId==='sec-tasques') renderTasks();
+  if(sectionId==='sec-objectius') renderGoals();
+  if(sectionId==='sec-capseccio') renderCapSeccio();
+  if(sectionId==='sec-calendari') renderCalendar();
+}
+
+function wireTabs(){
+  document.querySelectorAll('#benestar-tabs .chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      document.querySelectorAll('#benestar-tabs .chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      document.querySelectorAll('.bt-pane').forEach(p=>p.style.display='none');
+      document.getElementById('bt-'+chip.dataset.tab).style.display='block';
+      if(chip.dataset.tab==='grafics') renderChart('notes');
+      if(chip.dataset.tab==='son') renderSleepAvg();
+    });
+  });
+  document.querySelectorAll('#chart-tabs .chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      document.querySelectorAll('#chart-tabs .chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      renderChart(chip.dataset.metric);
+    });
+  });
+  document.querySelectorAll('#estudi-tabs .chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      document.querySelectorAll('#estudi-tabs .chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      document.querySelectorAll('.es-pane').forEach(p=>p.style.display='none');
+      document.getElementById('es-'+chip.dataset.tab).style.display='block';
+      if(chip.dataset.tab==='apunts') renderApunts();
+    });
+  });
+}
+
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+
+/* ===================== INICI ===================== */
+function renderInici(){
+  const wk = monday(new Date());
+  const horari = LS.get(`epc_horari_${CUR.dni}_${wk}`, {});
+  const todayIdx = ((new Date().getDay()+6)%7)+1;
+  const todaysClasses = Object.values(horari).filter(c=>c.dia===todayIdx).sort((a,b)=>a.hora.localeCompare(b.hora));
+  document.getElementById('in-classes-avui').textContent = todaysClasses.length;
+  const list = document.getElementById('in-proper-list');
+  list.innerHTML = todaysClasses.length ? todaysClasses.map(c=>`
+    <div class="subject-row"><div><div class="subject-name">${esc(c.titol)}</div><div class="subject-avg">${c.hora}${c.loc? ' · '+esc(c.loc):''}</div></div></div>
+  `).join('') : `<div class="empty-state"><div class="ic">📅</div>Cap classe registrada per avui. Ves a Calendari per omplir l'horari.</div>`;
+
+  const son = LS.get(keyFor('son'), []);
+  const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
+  const sy = son.find(s=>s.data===yesterday);
+  document.getElementById('in-son').textContent = sy? sy.hores+"h" : "—";
+
+  const animo = LS.get(keyFor('animo'), []);
+  const at = animo.find(a=>a.data===todayStr());
+  const moodObj = at? MOODS.find(m=>m.k===at.estat):null;
+  document.getElementById('in-animo').textContent = moodObj? moodObj.e : "—";
+
+  const notes = LS.get(keyFor('notes'), []);
+  const avg = notes.length? (notes.reduce((s,n)=>s+n.nota,0)/notes.length).toFixed(1) : "—";
+  document.getElementById('in-mitjana').textContent = avg;
+
+  document.getElementById('hdr-streak').textContent = bestStreak();
+
+  const pendingTasks = LS.get(keyFor('tasques'), []).filter(t=>!t.completada)
+    .slice().sort((a,b)=> new Date(`${a.dataLimit}T${a.horaLimit||'23:59'}`) - new Date(`${b.dataLimit}T${b.horaLimit||'23:59'}`));
+  const tmini = document.getElementById('in-tasks-mini');
+  tmini.innerHTML = pendingTasks.length ? pendingTasks.slice(0,3).map(t=>{
+    const u = taskUrgency(t);
+    const color = (u.cls==='task-overdue'||u.cls==='task-urgent') ? 'var(--red)' : (u.cls==='task-warning' ? 'var(--amber)' : 'var(--ink-soft)');
+    return `<div class="subject-row"><div class="subject-name">${esc(t.titol)}</div><div class="subject-avg" style="color:${color};font-weight:600;">${fmtRemaining(u.ms)}</div></div>`;
+  }).join('') : `<div class="empty-state"><div class="ic">✅</div>Cap tasca pendent.</div>`;
+
+  const goals = LS.get(keyFor('objectius'), []);
+  const mini = document.getElementById('in-goals-mini');
+  mini.innerHTML = goals.length ? goals.slice(0,3).map(g=>`
+    <div class="subject-row"><div class="subject-name">${esc(g.titol)}</div><div class="subject-avg">${streakFor(g)} dies seguits</div></div>
+  `).join('') : `<div class="empty-state"><div class="ic">🎯</div>Encara no tens objectius. Crea'n un a l'apartat Objectius.</div>`;
+}
+
+function bestStreak(){
+  const goals = LS.get(keyFor('objectius'), []);
+  if(!goals.length) return 0;
+  return Math.max(0, ...goals.map(streakFor));
+}
+
+function esc(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+
+/* ===================== CALENDARI ===================== */
+let cal_weekOffset = 0;
+function genSlots(startH,startM,endH,endM){
+  const out=[]; let h=startH,m=startM;
+  while(h<endH || (h===endH && m<endM)){
+    out.push(String(h).padStart(2,'0')+':'+String(m).padStart(2,'0'));
+    m+=30; if(m>=60){m=0;h++;}
+  }
+  return out;
+}
+const DAYS = ["Dilluns","Dimarts","Dimecres","Dijous","Divendres"];
+let cal_editing = null;
+let cal_period = 'mati'; // 'mati' (6:30-14:00) or 'tarda' (14:00-22:00)
+
+function getCalHours(){
+  return cal_period==='tarda' ? genSlots(14,0,22,0) : genSlots(6,30,14,0);
+}
+
+function changeCalPeriod(v){
+  cal_period = v;
+  LS.set('epc_cal_period', v);
+  renderCalendar();
+}
+
+function calWeek(delta){ cal_weekOffset += delta; renderCalendar(); }
+
+function currentWeekStart(){
+  const d = new Date();
+  d.setDate(d.getDate() + cal_weekOffset*7);
+  return monday(d);
+}
+
+/* Text color (black/white) that contrasts best against a given hex background */
+function pickTextColor(hex){
+  if(!hex) return 'var(--blue-800)';
+  const h = hex.replace('#','');
+  if(h.length!==6) return '#14213d';
+  const r=parseInt(h.slice(0,2),16), g=parseInt(h.slice(2,4),16), b=parseInt(h.slice(4,6),16);
+  const luminance = (0.299*r + 0.587*g + 0.114*b)/255;
+  return luminance > 0.6 ? '#14213d' : '#ffffff';
+}
+
+function renderCalendar(){
+  const wk = currentWeekStart();
+  document.getElementById('cal-week-lbl').textContent = "Setmana del " + fmtDate(wk);
+  const horari = LS.get(`epc_horari_${CUR.dni}_${wk}`, {});
+  const HOURS = getCalHours();
+
+  // Occupancy grid so multi-slot classes (rowspan) don't get an extra <td> underneath them
+  const occupied = {};
+  DAYS.forEach((d,i)=>{ occupied[i+1] = new Array(HOURS.length).fill(false); });
+
+  let html = '<tr><th></th>' + DAYS.map(d=>`<th>${d}</th>`).join('') + '</tr>';
+  HOURS.forEach((h,rowIdx)=>{
+    html += `<tr><td class="hourcol">${h}</td>`;
+    DAYS.forEach((d,i)=>{
+      const dia = i+1;
+      if(occupied[dia][rowIdx]) return; // covered by a rowspan from an earlier row
+      const cellKey = `${dia}_${h}`;
+      const entry = horari[cellKey];
+      if(entry){
+        const slots = Math.max(1, Math.round((entry.durada||30)/30));
+        const span = Math.min(slots, HOURS.length-rowIdx);
+        for(let s=1;s<span;s++){ occupied[dia][rowIdx+s]=true; }
+        const bg = entry.color || '#4c86f5';
+        const fg = pickTextColor(bg);
+        html += `<td rowspan="${span}"><button class="cal-cell filled" style="background:${bg};color:${fg};height:100%;" onclick="editCell('${wk}','${cellKey}',${dia},'${h}')">${esc(entry.titol)}${entry.loc? '<span class="loc">'+esc(entry.loc)+'</span>':''}</button></td>`;
+      } else {
+        html += `<td><button class="cal-cell" onclick="editCell('${wk}','${cellKey}',${dia},'${h}')"></button></td>`;
+      }
+    });
+    html += '</tr>';
+  });
+  document.getElementById('cal-table').innerHTML = html;
+}
+
+function fmtDate(iso){ const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
+
+function populateCellSubjectSelect(selectedId){
+  const subjects = LS.get(keyFor('assignatures'), []);
+  const sel = document.getElementById('cell-subject');
+  sel.innerHTML = '<option value="">— Personalitzat —</option>' + subjects.map(s=>`<option value="${s.id}">${esc(s.nom)}</option>`).join('');
+  sel.value = selectedId || '';
+}
+
+function onCellSubjectChange(){
+  const subjects = LS.get(keyFor('assignatures'), []);
+  const id = document.getElementById('cell-subject').value;
+  const s = subjects.find(x=>x.id===id);
+  if(s){
+    document.getElementById('cell-title').value = s.nom;
+    document.getElementById('cell-color').value = s.color || '#4c86f5';
+  }
+}
+
+function editCell(wk, cellKey, dia, hora){
+  cal_editing = {wk, cellKey, dia, hora};
+  const horari = LS.get(`epc_horari_${CUR.dni}_${wk}`, {});
+  const entry = horari[cellKey];
+  document.getElementById('cell-modal-title').textContent = `${DAYS[dia-1]} · ${hora}`;
+  populateCellSubjectSelect(entry? entry.assignaturaId : null);
+  document.getElementById('cell-title').value = entry? entry.titol : '';
+  document.getElementById('cell-loc').value = entry? (entry.loc||'') : '';
+  document.getElementById('cell-durada').value = entry? (entry.durada||30) : 30;
+  document.getElementById('cell-color').value = entry? (entry.color||'#4c86f5') : '#4c86f5';
+  openModal('modal-cell');
+}
+
+function saveCell(){
+  const {wk, cellKey, dia, hora} = cal_editing;
+  const k = `epc_horari_${CUR.dni}_${wk}`;
+  const horari = LS.get(k, {});
+  const titol = document.getElementById('cell-title').value.trim();
+  if(!titol){ alert('Introdueix un títol.'); return; }
+  const durada = parseInt(document.getElementById('cell-durada').value) || 30;
+  const color = document.getElementById('cell-color').value || '#4c86f5';
+  const assignaturaId = document.getElementById('cell-subject').value || null;
+  horari[cellKey] = {dia, hora, titol, loc: document.getElementById('cell-loc').value.trim(), durada, color, assignaturaId};
+  LS.set(k, horari);
+  closeModal('modal-cell');
+  renderCalendar();
+  renderInici();
+}
+
+function clearCell(){
+  const {wk, cellKey} = cal_editing;
+  const k = `epc_horari_${CUR.dni}_${wk}`;
+  const horari = LS.get(k, {});
+  delete horari[cellKey];
+  LS.set(k, horari);
+  closeModal('modal-cell');
+  renderCalendar();
+  renderInici();
+}
+
+/* ===================== NOTES ===================== */
+let subj_selected = null;
+let editing_subject_id = null;
+
+function subjectAverage(sn){
+  if(!sn.length) return null;
+  const totalWeight = sn.reduce((a,n)=>a+(n.pes||0),0);
+  return totalWeight>0
+    ? sn.reduce((a,n)=>a+n.nota*(n.pes||0),0)/totalWeight
+    : sn.reduce((a,n)=>a+n.nota,0)/sn.length;
+}
+
+function renderNotes(){
+  const subjects = LS.get(keyFor('assignatures'), []);
+  const notes = LS.get(keyFor('notes'), []);
+  const list = document.getElementById('notes-list');
+  list.innerHTML = subjects.map(s=>{
+    const sn = notes.filter(n=>n.assignaturaId===s.id);
+    const totalWeight = sn.reduce((a,n)=>a+(n.pes||0),0);
+    const avg = subjectAverage(sn);
+    const cls = avg===null? '' : (avg<5?'grade-red':(avg<7?'grade-amber':'grade-green'));
+    const detailRows = sn.length ? sn.map(n=>`
+      <div class="grade-detail-row">
+        <span>${esc(n.descripcio)}</span>
+        <span>${n.pes? n.pes+'% · ':''}<b>${n.nota.toFixed(1)}</b> <button class="gd-del" onclick="event.stopPropagation();deleteGrade('${n.id}')">✕</button></span>
+      </div>`).join('') : `<div style="font-size:12px;color:var(--ink-soft);padding:4px 0;">Encara no hi ha notes.</div>`;
+    return `<div class="subject-block">
+      <div class="subject-row" style="cursor:pointer;" onclick="toggleSubjDetail('${s.id}')">
+        <div style="display:flex;align-items:center;gap:9px;min-width:0;">
+          <span class="subj-dot" style="background:${s.color||'#4c86f5'}"></span>
+          <div style="min-width:0;"><div class="subject-name">${esc(s.nom)}</div><div class="subject-avg">${sn.length} nota(es)${avg!==null? ' · mitjana '+avg.toFixed(1):''}${totalWeight>0 && totalWeight!==100? ' · pes '+totalWeight+'%':''}</div></div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;">
+          <span class="grade-pill ${cls}">${avg===null?'—':avg.toFixed(1)}</span>
+          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openAddGrade('${s.id}','${esc(s.nom)}')">+ Nota</button>
+          <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openAddSubject('${s.id}')">✎</button>
+        </div>
+      </div>
+      <div class="subj-detail" id="subj-detail-${s.id}" style="display:none;">${detailRows}</div>
+    </div>`;
+  }).join('') || `<div class="empty-state"><div class="ic">📘</div>Encara no hi ha assignatures.</div>`;
+}
+
+function toggleSubjDetail(id){
+  const el = document.getElementById('subj-detail-'+id);
+  if(el) el.style.display = (el.style.display==='none') ? 'block' : 'none';
+}
+
+function openAddSubject(id){
+  editing_subject_id = id || null;
+  const subjects = LS.get(keyFor('assignatures'), []);
+  const s = id ? subjects.find(x=>x.id===id) : null;
+  document.getElementById('subject-modal-title').textContent = s ? 'Editar assignatura' : 'Nova assignatura';
+  document.getElementById('new-subject-name').value = s ? s.nom : '';
+  document.getElementById('new-subject-color').value = s ? (s.color||'#4c86f5') : SUBJECT_COLORS[subjects.length % SUBJECT_COLORS.length];
+  document.getElementById('btn-delete-subject').style.display = s ? 'inline-flex' : 'none';
+  openModal('modal-subject');
+}
+function addSubject(){
+  const name = document.getElementById('new-subject-name').value.trim();
+  if(!name) return;
+  const color = document.getElementById('new-subject-color').value || '#4c86f5';
+  const k = keyFor('assignatures');
+  const subs = LS.get(k, []);
+  if(editing_subject_id){
+    const s = subs.find(x=>x.id===editing_subject_id);
+    if(s){ s.nom = name; s.color = color; }
+  } else {
+    subs.push({id:uid(), nom:name, color});
+  }
+  LS.set(k, subs);
+  closeModal('modal-subject');
+  renderNotes();
+  renderCalendar();
+}
+function deleteSubject(){
+  if(!editing_subject_id) return;
+  if(!confirm("Segur que vols eliminar aquesta assignatura? També s'esborraran les seves notes.")) return;
+  const k = keyFor('assignatures');
+  let subs = LS.get(k, []);
+  subs = subs.filter(x=>x.id!==editing_subject_id);
+  LS.set(k, subs);
+  const nk = keyFor('notes');
+  let notes = LS.get(nk, []);
+  notes = notes.filter(n=>n.assignaturaId!==editing_subject_id);
+  LS.set(nk, notes);
+  closeModal('modal-subject');
+  renderNotes();
+}
+function openAddGrade(subjId, subjName){
+  subj_selected = subjId;
+  document.getElementById('grade-modal-title').textContent = 'Nova nota — ' + subjName;
+  document.getElementById('new-grade-desc').value='';
+  document.getElementById('new-grade-value').value='';
+  const notes = LS.get(keyFor('notes'), []).filter(n=>n.assignaturaId===subjId);
+  const used = notes.reduce((a,n)=>a+(n.pes||0),0);
+  const suggested = Math.max(0, 100-used);
+  document.getElementById('new-grade-weight').value = suggested>0 ? suggested : '';
+  openModal('modal-grade');
+}
+function addGrade(){
+  const desc = document.getElementById('new-grade-desc').value.trim() || 'Avaluació';
+  const val = parseFloat(document.getElementById('new-grade-value').value);
+  const pes = parseFloat(document.getElementById('new-grade-weight').value) || 0;
+  if(isNaN(val) || val<0 || val>10){ alert('Introdueix una nota vàlida entre 0 i 10.'); return; }
+  const k = keyFor('notes');
+  const notes = LS.get(k, []);
+  notes.push({id:uid(), assignaturaId:subj_selected, nota:val, descripcio:desc, pes, data:todayStr()});
+  LS.set(k, notes);
+  closeModal('modal-grade');
+  renderNotes();
+}
+function deleteGrade(gradeId){
+  const k = keyFor('notes');
+  let notes = LS.get(k, []);
+  notes = notes.filter(n=>n.id!==gradeId);
+  LS.set(k, notes);
+  renderNotes();
+}
+
+/* ===================== TASQUES PENDENTS ===================== */
+let taskTimerInterval = null;
+
+function openAddTask(){
+  document.getElementById('task-title').value='';
+  document.getElementById('task-date').value=todayStr();
+  document.getElementById('task-time').value='23:59';
+  const subjects = LS.get(keyFor('assignatures'), []);
+  const sel = document.getElementById('task-subject');
+  sel.innerHTML = '<option value="">— Cap —</option>' + subjects.map(s=>`<option value="${s.id}">${esc(s.nom)}</option>`).join('');
+  openModal('modal-task');
+}
+function addTask(){
+  const titol = document.getElementById('task-title').value.trim();
+  const data = document.getElementById('task-date').value;
+  const hora = document.getElementById('task-time').value || '23:59';
+  if(!titol || !data){ alert('Introdueix un títol i una data límit.'); return; }
+  const k = keyFor('tasques');
+  const arr = LS.get(k, []);
+  arr.push({id:uid(), titol, assignaturaId: document.getElementById('task-subject').value || null, dataLimit:data, horaLimit:hora, completada:false});
+  LS.set(k, arr);
+  closeModal('modal-task');
+  renderTasks();
+  renderInici();
+}
+function toggleTaskDone(id){
+  const k = keyFor('tasques');
+  const arr = LS.get(k, []);
+  const t = arr.find(x=>x.id===id);
+  if(t) t.completada = !t.completada;
+  LS.set(k, arr);
+  renderTasks();
+  renderInici();
+}
+function deleteTask(id){
+  const k = keyFor('tasques');
+  let arr = LS.get(k, []);
+  arr = arr.filter(x=>x.id!==id);
+  LS.set(k, arr);
+  renderTasks();
+  renderInici();
+}
+function taskDueDate(t){ return new Date(`${t.dataLimit}T${t.horaLimit||'23:59'}`); }
+function taskUrgency(t){
+  if(t.completada) return {cls:'task-done', lbl:'Feta', ms:0};
+  const ms = taskDueDate(t).getTime() - Date.now();
+  if(ms<0) return {cls:'task-overdue', lbl:'Caducada', ms};
+  if(ms < 24*3600*1000) return {cls:'task-urgent', lbl:'Urgent', ms};
+  if(ms < 72*3600*1000) return {cls:'task-warning', lbl:'Aviat', ms};
+  return {cls:'task-ok', lbl:'A temps', ms};
+}
+function fmtRemaining(ms){
+  if(ms<0){
+    const days = Math.floor(-ms/86400000);
+    return days>0 ? `Caducada fa ${days} dia${days>1?'s':''}` : 'Caducada fa poques hores';
+  }
+  const days = Math.floor(ms/86400000);
+  const hours = Math.floor((ms%86400000)/3600000);
+  const mins = Math.floor((ms%3600000)/60000);
+  if(days>0) return `Queden ${days}d ${hours}h`;
+  if(hours>0) return `Queden ${hours}h ${mins}min`;
+  return `Queden ${mins} min`;
+}
+function renderTasks(){
+  const subjects = LS.get(keyFor('assignatures'), []);
+  const arr = LS.get(keyFor('tasques'), []).slice();
+  arr.sort((a,b)=>{
+    if(a.completada!==b.completada) return a.completada?1:-1;
+    return taskDueDate(a) - taskDueDate(b);
+  });
+  const list = document.getElementById('tasks-list');
+  list.innerHTML = arr.length ? arr.map(t=>{
+    const subj = subjects.find(s=>s.id===t.assignaturaId);
+    const u = taskUrgency(t);
+    const remText = t.completada ? 'Completada' : fmtRemaining(u.ms);
+    return `<div class="task-item ${u.cls}">
+      <button class="task-check ${t.completada?'done':''}" onclick="toggleTaskDone('${t.id}')">${t.completada?'✓':''}</button>
+      <div class="task-info">
+        <div class="task-title">${esc(t.titol)}${subj?` <span class="task-subj" style="background:${subj.color}22;color:${subj.color};">${esc(subj.nom)}</span>`:''}</div>
+        <div class="task-meta">Límit: ${fmtDate(t.dataLimit)} ${t.horaLimit||''} · <b>${remText}</b></div>
+      </div>
+      <button class="task-del" onclick="deleteTask('${t.id}')">✕</button>
+    </div>`;
+  }).join('') : `<div class="empty-state"><div class="ic">✅</div>No tens cap tasca pendent. Afegeix-ne una!</div>`;
+}
+
+/* ===================== BENESTAR: ÀNIM ===================== */
+let mood_sel = null;
+function buildMoodPicker(){
+  const wrap = document.getElementById('mood-picker');
+  wrap.innerHTML = MOODS.map(m=>`
+    <div class="mood-opt" data-k="${m.k}" onclick="pickMood('${m.k}')"><div class="emoji">${m.e}</div><div class="txt">${m.t}</div></div>
+  `).join('');
+}
+function pickMood(k){
+  mood_sel = k;
+  document.querySelectorAll('.mood-opt').forEach(o=>o.classList.toggle('sel', o.dataset.k===k));
+}
+function saveMood(){
+  if(!mood_sel){ alert('Selecciona com et sents avui.'); return; }
+  const k = keyFor('animo');
+  const arr = LS.get(k, []).filter(a=>a.data!==todayStr());
+  arr.push({data:todayStr(), estat:mood_sel, nota:document.getElementById('mood-note').value.trim()});
+  LS.set(k, arr);
+  alert('Registre desat. Gràcies per compartir com et sents!');
+  renderInici();
+}
+
+/* ===================== BENESTAR: SON ===================== */
+function saveSleep(){
+  const hores = parseFloat(document.getElementById('sleep-hours').value);
+  const qualitat = parseInt(document.getElementById('sleep-quality').value);
+  if(isNaN(hores)){ alert('Introdueix les hores de son.'); return; }
+  const k = keyFor('son');
+  const arr = LS.get(k, []).filter(s=>s.data!==todayStr());
+  arr.push({data:todayStr(), hores, qualitat: isNaN(qualitat)?null:qualitat});
+  LS.set(k, arr);
+  document.getElementById('sleep-hours').value='';
+  document.getElementById('sleep-quality').value='';
+  renderSleepAvg();
+  renderInici();
+}
+function renderSleepAvg(){
+  const arr = LS.get(keyFor('son'), []);
+  const last7 = arr.filter(s=>{ const d=new Date(s.data); return (Date.now()-d.getTime())<=7*86400000; });
+  const avg = last7.length? (last7.reduce((a,s)=>a+s.hores,0)/last7.length).toFixed(1) : '—';
+  document.getElementById('sleep-avg').textContent = avg==='—'? '—' : avg+'h';
+}
+
+/* ===================== BENESTAR: TESTS ESTRÈS ===================== */
+function buildStressQuestions(){
+  const wrap = document.getElementById('stress-questions');
+  wrap.innerHTML = STRESS_QUESTIONS.map((q,i)=>`
+    <div class="form-row"><label class="f-lbl">${esc(q)}</label>
+    <select id="sq-${i}"><option value="0">0</option><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option></select></div>
+  `).join('');
+}
+function submitStressTest(){
+  let total = 0;
+  STRESS_QUESTIONS.forEach((q,i)=>{ total += parseInt(document.getElementById('sq-'+i).value); });
+  const max = STRESS_QUESTIONS.length*4;
+  const pct = Math.round((total/max)*100);
+  let nivell, missatge, color;
+  if(pct<35){ nivell='Baix'; color='var(--green)'; missatge="El teu nivell d'estrès és baix. Continua cuidant els teus hàbits de descans i estudi."; }
+  else if(pct<65){ nivell='Moderat'; color='var(--amber)'; missatge="Nivell moderat d'estrès. Prova d'incorporar pauses regulars i activitat física a la teva rutina."; }
+  else { nivell='Alt'; color='var(--red)'; missatge="Nivell d'estrès elevat. Considera parlar-ne amb el tutor/a o el servei de suport de l'escola."; }
+
+  const k = keyFor('tests');
+  const arr = LS.get(k, []);
+  arr.push({id:uid(), data:todayStr(), tipus:'maslach_simplificat', puntuacio:pct, nivell});
+  LS.set(k, arr);
+
+  document.getElementById('stress-result-card').style.display='block';
+  document.getElementById('stress-result').innerHTML = `
+    <div style="font-size:30px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:${color};">${pct}%</div>
+    <div style="font-weight:600;margin:4px 0;color:${color};">Nivell ${nivell}</div>
+    <p style="font-size:13px;color:var(--ink-soft);">${missatge}</p>`;
+}
+
+/* ===================== GRÀFIQUES D'EVOLUCIÓ ===================== */
+let evoChart = null;
+function renderChart(metric){
+  const ctx = document.getElementById('evo-chart').getContext('2d');
+  let labels=[], data=[], label='', color='#2f6fed';
+
+  if(metric==='notes'){
+    const notes = LS.get(keyFor('notes'), []).slice().sort((a,b)=>a.data.localeCompare(b.data));
+    labels = notes.map(n=>fmtDate(n.data)); data = notes.map(n=>n.nota); label='Notes'; color='#2f6fed';
+  } else if(metric==='animo'){
+    const arr = LS.get(keyFor('animo'), []).slice().sort((a,b)=>a.data.localeCompare(b.data));
+    labels = arr.map(a=>fmtDate(a.data)); data = arr.map(a=>MOODS.find(m=>m.k===a.estat)?.v||3); label='Ànim (1-5)'; color='#1e8e5a';
+  } else if(metric==='son'){
+    const arr = LS.get(keyFor('son'), []).slice().sort((a,b)=>a.data.localeCompare(b.data));
+    labels = arr.map(s=>fmtDate(s.data)); data = arr.map(s=>s.hores); label='Hores de son'; color='#c98a1f';
+  } else if(metric==='estres'){
+    const arr = LS.get(keyFor('tests'), []).slice().sort((a,b)=>a.data.localeCompare(b.data));
+    labels = arr.map(t=>fmtDate(t.data)); data = arr.map(t=>t.puntuacio); label="Nivell d'estrès (%)"; color='#d64545';
+  }
+
+  if(evoChart) evoChart.destroy();
+  evoChart = new Chart(ctx, {
+    type:'line',
+    data:{ labels, datasets:[{ label, data, borderColor:color, backgroundColor:color+'22', tension:.35, fill:true, pointRadius:3 }] },
+    options:{ responsive:true, plugins:{legend:{display:false}}, scales:{ y:{ beginAtZero: metric!=='notes' } } }
+  });
+  if(!labels.length){ /* Chart.js shows empty grid gracefully */ }
+}
+
+/* ===================== ESTUDI: CONCENTRACIÓ ===================== */
+let sc_selected = null;
+function selectScenario(sc){
+  sc_selected = sc;
+  document.querySelectorAll('.scenario').forEach(el=>el.classList.toggle('sel', el.dataset.sc===sc));
+  const btn = document.getElementById('btn-start-flight');
+  btn.disabled = false;
+  btn.textContent = "Iniciar viatge d'estudi cap a " + SCENARIOS[sc].label;
+}
+
+let flightTimer=null, focusTimer=null, focusSecondsLeft=0, focusTotal=0, focusPaused=false, audioCtx=null, audioNodes=null;
+
+function startFlight(){
+  if(!sc_selected) return;
+  document.getElementById('scenario-picker-card').style.display='none';
+  document.getElementById('flight-card').style.display='block';
+  document.getElementById('flight-dest').textContent = 'Volant cap a ' + SCENARIOS[sc_selected].nom + '...';
+  let pct=0;
+  const fill = document.getElementById('flight-progress');
+  const status = document.getElementById('flight-status');
+  const stages = ['Enlairant-se...','Sobrevolant núvols...','Iniciant el descens...','Aterrant...'];
+  flightTimer = setInterval(()=>{
+    pct += 100/30; // ~3s fake flight
+    fill.style.width = Math.min(pct,100)+'%';
+    status.textContent = stages[Math.min(stages.length-1, Math.floor(pct/25))];
+    if(pct>=100){
+      clearInterval(flightTimer);
+      document.getElementById('flight-card').style.display='none';
+      beginFocusSession();
+    }
+  }, 100);
+}
+
+function beginFocusSession(){
+  document.getElementById('session-card').style.display='block';
+  focusTotal = Math.max(5, parseInt(document.getElementById('focus-minutes').value)||25) * 60;
+  focusSecondsLeft = focusTotal;
+  focusPaused = false;
+  updateFocusDisplay();
+  startAmbientSound(sc_selected);
+  focusTimer = setInterval(tickFocus, 1000);
+}
+
+function tickFocus(){
+  if(focusPaused) return;
+  focusSecondsLeft--;
+  updateFocusDisplay();
+  if(focusSecondsLeft<=0){
+    clearInterval(focusTimer);
+    stopAmbientSound();
+    logFocusSession(true);
+    alert('Sessió completada! ' + suggestBreak(false));
+    resetFocusUI();
+  }
+}
+
+function updateFocusDisplay(){
+  const m = String(Math.floor(focusSecondsLeft/60)).padStart(2,'0');
+  const s = String(focusSecondsLeft%60).padStart(2,'0');
+  document.getElementById('focus-timer').textContent = `${m}:${s}`;
+}
+
+function pauseFocus(){
+  focusPaused = !focusPaused;
+  document.getElementById('btn-pause-focus').textContent = focusPaused? 'Reprendre':'Pausa';
+  if(focusPaused) stopAmbientSound(); else startAmbientSound(sc_selected);
+}
+
+function stopFocus(){
+  clearInterval(focusTimer);
+  stopAmbientSound();
+  logFocusSession(false);
+  resetFocusUI();
+}
+
+function resetFocusUI(){
+  document.getElementById('session-card').style.display='none';
+  document.getElementById('scenario-picker-card').style.display='block';
+  document.getElementById('flight-card').style.display='none';
+}
+
+function logFocusSession(completed){
+  const k = keyFor('sessions');
+  const arr = LS.get(k, []);
+  arr.push({id:uid(), escenari:sc_selected, durada:Math.round((focusTotal-focusSecondsLeft)/60), completada:completed, data:new Date().toISOString()});
+  LS.set(k, arr);
+}
+
+/* Web Audio ambient noise generator — no external audio files needed */
+function startAmbientSound(scenario){
+  stopAmbientSound();
+  try{
+    audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    const bufferSize = 2*audioCtx.sampleRate;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    let lastOut=0;
+    for(let i=0;i<bufferSize;i++){
+      const white = Math.random()*2-1;
+      lastOut = (lastOut + 0.02*white)/1.02;
+      data[i] = lastOut*3.5; // brownish noise base
+    }
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = buffer; noise.loop = true;
+
+    const filter = audioCtx.createBiquadFilter();
+    const gain = audioCtx.createGain();
+    gain.gain.value = 0.18;
+
+    if(scenario==='foc'){ filter.type='lowpass'; filter.frequency.value=700; }
+    else if(scenario==='bosc'){ filter.type='bandpass'; filter.frequency.value=900; filter.Q.value=0.6; }
+    else if(scenario==='pluja'){ filter.type='highpass'; filter.frequency.value=1200; gain.gain.value=0.12; }
+    else if(scenario==='ocea'){ filter.type='lowpass'; filter.frequency.value=500; }
+
+    noise.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+    noise.start();
+
+    // slow amplitude LFO for waves/crackle feel
+    const lfo = audioCtx.createOscillator();
+    const lfoGain = audioCtx.createGain();
+    lfo.frequency.value = scenario==='ocea'? 0.12 : (scenario==='foc'?0.6:0.2);
+    lfoGain.gain.value = scenario==='ocea'? 0.07 : 0.03;
+    lfo.connect(lfoGain); lfoGain.connect(gain.gain);
+    lfo.start();
+
+    audioNodes = {noise, filter, gain, lfo};
+  }catch(e){ /* AudioContext not available */ }
+}
+function stopAmbientSound(){
+  if(audioNodes){ try{audioNodes.noise.stop(); audioNodes.lfo.stop();}catch(e){} audioNodes=null; }
+  if(audioCtx){ audioCtx.close(); audioCtx=null; }
+}
+
+/* ===================== ESTUDI: PAUSES ===================== */
+function suggestBreak(render){
+  const idea = BREAK_IDEAS[Math.floor(Math.random()*BREAK_IDEAS.length)];
+  if(render){ document.getElementById('break-suggestion').innerHTML = `<div class="card" style="margin:0;background:var(--blue-050);">💡 ${esc(idea)}</div>`; }
+  return idea;
+}
+
+/* ===================== ESTUDI: APUNTS I TESTS ===================== */
+const STOPWORDS = new Set(["que","de","la","el","els","les","i","a","en","un","una","per","amb","es","al","del","com","també","però","més","seu","seva","o","no","així","cada"]);
+
+function processApunt(){
+  const titol = document.getElementById('apunt-titol').value.trim();
+  const contingut = document.getElementById('apunt-contingut').value.trim();
+  if(!titol || contingut.length<40){ alert('Introdueix un títol i un text amb prou contingut (mínim 40 caràcters).'); return; }
+
+  const sentences = contingut.split(/(?<=[.!?])\s+/).filter(s=>s.trim().length>15);
+  const resum = summarize(sentences);
+  const preguntes = generateQuiz(sentences);
+
+  const k = keyFor('apunts');
+  const arr = LS.get(k, []);
+  arr.push({id:uid(), titol, contingut, resum, preguntes, data:todayStr()});
+  LS.set(k, arr);
+
+  document.getElementById('apunt-titol').value='';
+  document.getElementById('apunt-contingut').value='';
+  renderApunts();
+  alert('Resum i test generats correctament!');
+}
+
+function summarize(sentences){
+  if(sentences.length<=2) return sentences.join(' ');
+  const freq = {};
+  sentences.forEach(s=> s.toLowerCase().match(/[a-zàèéíòóúçï]+/g)?.forEach(w=>{ if(!STOPWORDS.has(w) && w.length>3) freq[w]=(freq[w]||0)+1; }));
+  const scored = sentences.map(s=>{
+    const words = s.toLowerCase().match(/[a-zàèéíòóúçï]+/g)||[];
+    const score = words.reduce((a,w)=>a+(freq[w]||0),0)/Math.max(1,words.length);
+    return {s, score};
+  });
+  const top = scored.sort((a,b)=>b.score-a.score).slice(0,Math.min(3,sentences.length)).map(x=>x.s);
+  return sentences.filter(s=>top.includes(s)).join(' ');
+}
+
+function generateQuiz(sentences){
+  const freq = {};
+  const allWords = [];
+  sentences.forEach(s=> s.toLowerCase().match(/[a-zàèéíòóúçï]{5,}/g)?.forEach(w=>{ if(!STOPWORDS.has(w)){ freq[w]=(freq[w]||0)+1; allWords.push(w);} }));
+  const uniqueWords = [...new Set(allWords)];
+  const questions = [];
+  sentences.slice(0, Math.min(6, sentences.length)).forEach(s=>{
+    const words = (s.match(/[A-Za-zàèéíòóúçïÀ-Ú]{5,}/g)||[]).filter(w=>!STOPWORDS.has(w.toLowerCase()));
+    if(!words.length) return;
+    const keyword = words.sort((a,b)=>b.length-a.length)[0];
+    const blanked = s.replace(new RegExp(keyword,'i'), '_____');
+    const distractors = uniqueWords.filter(w=>w.toLowerCase()!==keyword.toLowerCase());
+    shuffle(distractors);
+    const opts = [keyword, ...distractors.slice(0,3)];
+    if(opts.length<2) return;
+    shuffle(opts);
+    questions.push({ pregunta: blanked, opcions: opts, correcta: opts.indexOf(keyword) });
+  });
+  return questions;
+}
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+function renderApunts(){
+  const arr = LS.get(keyFor('apunts'), []);
+  const list = document.getElementById('apunts-list');
+  list.innerHTML = arr.length? arr.slice().reverse().map(a=>`
+    <div class="note-item">
+      <div class="t">${esc(a.titol)}</div>
+      <div class="r"><b>Resum:</b> ${esc(a.resum)}</div>
+      <div style="margin-top:8px;display:flex;gap:8px;">
+        <button class="btn btn-ghost btn-sm" onclick="openQuiz('${a.id}')">Fer test (${a.preguntes.length} preguntes)</button>
+      </div>
+    </div>
+  `).join('') : `<div class="empty-state"><div class="ic">📝</div>Encara no has pujat cap apunt.</div>`;
+}
+
+let quiz_state = null;
+function openQuiz(apuntId){
+  const arr = LS.get(keyFor('apunts'), []);
+  const apunt = arr.find(a=>a.id===apuntId);
+  if(!apunt || !apunt.preguntes.length){ alert("No hi ha prou contingut per generar preguntes d'aquest apunt."); return; }
+  quiz_state = {qs: apunt.preguntes, idx:0, correct:0, titol: apunt.titol};
+  document.getElementById('quiz-title').textContent = 'Test — ' + apunt.titol;
+  renderQuizQ();
+  openModal('modal-quiz');
+}
+function renderQuizQ(){
+  const {qs, idx} = quiz_state;
+  const q = qs[idx];
+  const body = document.getElementById('quiz-body');
+  body.innerHTML = `<div class="quiz-q">${idx+1}/${qs.length} — ${esc(q.pregunta)}</div>` +
+    q.opcions.map((o,i)=>`<button class="quiz-opt" data-i="${i}" onclick="answerQuiz(${i})">${esc(o)}</button>`).join('');
+  document.getElementById('quiz-next-btn').style.display='none';
+}
+function answerQuiz(i){
+  const {qs, idx} = quiz_state;
+  const q = qs[idx];
+  document.querySelectorAll('.quiz-opt').forEach((b,bi)=>{
+    b.onclick=null;
+    if(bi===q.correcta) b.classList.add('correct');
+    else if(bi===i) b.classList.add('wrong');
+  });
+  if(i===q.correcta) quiz_state.correct++;
+  document.getElementById('quiz-next-btn').style.display = (idx<qs.length-1) ? 'block' : 'none';
+  if(idx>=qs.length-1){
+    setTimeout(()=>{ alert(`Test completat: ${quiz_state.correct}/${qs.length} correctes.`); closeModal('modal-quiz'); }, 400);
+  }
+}
+function nextQuizQ(){ quiz_state.idx++; renderQuizQ(); }
+
+/* ===================== OBJECTIUS I RATXES ===================== */
+function openAddGoal(){ document.getElementById('goal-title').value=''; openModal('modal-goal'); }
+function addGoal(){
+  const titol = document.getElementById('goal-title').value.trim();
+  const tipus = document.getElementById('goal-type').value;
+  if(!titol) return;
+  const k = keyFor('objectius');
+  const arr = LS.get(k, []);
+  arr.push({id:uid(), titol, tipus, historial:[]});
+  LS.set(k, arr);
+  closeModal('modal-goal');
+  renderGoals();
+}
+function streakFor(goal){
+  if(!goal.historial.length) return 0;
+  const dates = new Set(goal.historial);
+  let streak=0, d=new Date();
+  if(!dates.has(todayStr())) d.setDate(d.getDate()-1); // tolerate not-yet-done-today
+  while(dates.has(d.toISOString().slice(0,10))){ streak++; d.setDate(d.getDate()-1); }
+  return streak;
+}
+function toggleGoalToday(goalId){
+  const k = keyFor('objectius');
+  const arr = LS.get(k, []);
+  const g = arr.find(x=>x.id===goalId);
+  const t = todayStr();
+  if(g.historial.includes(t)) g.historial = g.historial.filter(d=>d!==t);
+  else g.historial.push(t);
+  LS.set(k, arr);
+  renderGoals();
+  checkBadges();
+}
+function renderGoals(){
+  const arr = LS.get(keyFor('objectius'), []);
+  const list = document.getElementById('goals-list');
+  list.innerHTML = arr.length? arr.map(g=>{
+    const s = streakFor(g);
+    const done = g.historial.includes(todayStr());
+    return `<div class="goal-card">
+      <div class="goal-flame">🔥</div>
+      <div class="goal-info"><div class="goal-title">${esc(g.titol)}</div><div class="goal-meta">${s} dies seguits</div></div>
+      <button class="goal-check ${done?'done':''}" onclick="toggleGoalToday('${g.id}')">${done?'✓':''}</button>
+    </div>`;
+  }).join('') : `<div class="empty-state"><div class="ic">🎯</div>Crea el teu primer objectiu per començar una ratxa.</div>`;
+  checkBadges();
+}
+function checkBadges(){
+  const s = bestStreak();
+  const milestones = [{d:3,c:'racha_3',n:'3 dies seguits'},{d:7,c:'racha_7',n:'1 setmana'},{d:14,c:'racha_14',n:'2 setmanes'},{d:30,c:'racha_30',n:'1 mes'}];
+  const k = keyFor('insignies');
+  let arr = LS.get(k, []);
+  milestones.forEach(m=>{ if(s>=m.d && !arr.find(b=>b.codi===m.c)) arr.push({codi:m.c, nom:m.n}); });
+  LS.set(k, arr);
+  const badgeWrap = document.getElementById('badges-list');
+  badgeWrap.innerHTML = arr.length? arr.map(b=>`<span class="badge">🏅 ${esc(b.nom)}</span>`).join('') : `<span style="font-size:12.5px;color:var(--ink-soft);">Encara no tens insígnies. Mantén una ratxa per desbloquejar-ne!</span>`;
+}
+
+/* ===================== CAP DE SECCIÓ ===================== */
+function renderCapSeccio(){
+  document.getElementById('cs-classe-nom').textContent = CUR.classe;
+  const usuaris = LS.get('epc_usuaris', {});
+  const students = Object.values(usuaris).filter(u=>u.classe===CUR.classe && u.dni!==CUR.dni);
+  const attKey = `epc_assistencia_${CUR.classe}_${todayStr()}`;
+  const att = LS.get(attKey, {});
+  const wrap = document.getElementById('cs-students');
+  wrap.innerHTML = students.length? students.map(s=>{
+    const initials = s.nom.split(' ').map(p=>p[0]).slice(0,2).join('').toUpperCase();
+    const present = att[s.dni] !== false;
+    return `<div class="student-row">
+      <div class="avatar">${initials}</div>
+      <div class="student-info"><div class="student-name">${esc(s.nom)}</div><div class="student-dni">${esc(s.dni)}</div></div>
+      <button class="att-toggle ${present?'present':'absent'}" onclick="toggleAttendance('${s.dni}')">${present?'✓':'✕'}</button>
+    </div>`;
+  }).join('') : `<div class="empty-state"><div class="ic">🛡️</div>Encara no hi ha altres alumnes registrats en aquesta classe des d'aquest dispositiu.</div>`;
+}
+function toggleAttendance(dni){
+  const attKey = `epc_assistencia_${CUR.classe}_${todayStr()}`;
+  const att = LS.get(attKey, {});
+  att[dni] = att[dni]===false ? true : false;
+  LS.set(attKey, att);
+  renderCapSeccio();
+}
+</script>
+</body>
+</html>
